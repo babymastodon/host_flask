@@ -1,0 +1,49 @@
+<VirtualHost *:443>
+	#ServerAdmin hogbait@gmail.com
+	#ServerName mail.babymastodon.com
+    #ServerAlias hogbait-server.local	
+
+    WSGIDaemonProcess host_flask threads=25
+    WSGIProcessGroup host_flask
+	
+	SSLEngine on
+    SSLCertificateFile /var/www/keys/server.crt
+    SSLCertificateKeyFile /var/www/keys/server.key
+	
+	DocumentRoot /var/www/host_flask/documents
+
+	Alias /robots.txt /var/www/host_flask/documents/robots.txt
+    Alias /favicon.ico /var/www/host_flask/documents/favicon.ico
+
+    Alias /media/ /var/www/host_flask/documents/media/
+    Alias /static/ /var/www/host_flask/documents/static/
+
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /var/www/host_flask/documents>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	WSGIScriptAlias / /var/www/host_flask/host_flask/wsgi.py
+
+	<Directory /var/www/host_flask/host_flask>
+        <Files wsgi.py>
+		    Order allow,deny
+		    allow from all
+        </Files>
+	</Directory>
+	
+    ErrorLog /var/log/apache2/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog /var/log/apache2/access.log combined
+
+</VirtualHost>
