@@ -14,4 +14,38 @@ from django import forms
 from main.models import *
 from main.forms import *
 
+def login_required(f):
+    def login_function(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            email = request.META['SSL_CLIENT_S_DN_Email']
+            user = authenticate(email=email)
+            if user:
+                login(request, user)
+            else:
+                return redirect('main.views.newaccount')
+        return f(request, *args, **kwargs)
+    return login_function
+
+def newaccount(request):
+    rc={}
+    return render(request, 'main/login_view.html', rc)
+
+def home(request):
+    return render(request, 'main/home.html')
+
+def admin(request):
+    rc={}
+    return render(request, 'main/admin.html', rc)
+
+def newsite(request):
+    rc={}
+    return render(request, 'main/newsite.html', rc)
+
+def updatesite(request, pk):
+    rc={}
+    return render(request, 'main/updatesite.html', rc)
+
+def deletesite(request, pk):
+    rc={}
+    return render(request, 'main/deletesite.html', rc)
 

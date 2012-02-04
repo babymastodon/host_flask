@@ -4,18 +4,33 @@
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
 @import "compass/reset";
+@import "compass/css3";
+@import "compass";
 
 
-$gray : #cccccc;
-$dark : #666666;
+$white: white;
+$gray-light: #EEEEEE;
+$gray-mid: #CCCCCC;
+$gray-mid-dark: #999999;
+$gray-dark: #555555;
+$black: black;
+$dg: #111111;
 
+
+.unselectable{
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none; 
+    cursor:default;
+}
 
 body{
-    font-family: 'Nimbus Mono L', courier, sans-serif;
-    font-size: 16px;
-    color: $dark;
+   font-size: 16px;
+    color: $gray-dark;
     a{
-        color: $dark;
+        color: $gray-dark;
         text-decoration: none;
         &:hover{
             text-decoration: underline;
@@ -27,92 +42,181 @@ h1{font-size: 30px;}
 h2{font-size: 20px;}
 h3{font-size: 15px;}
 
-#page{
-    width: 600px;
-    margin: 20px auto;
-    border: 1px solid $gray;
-}
-
 #content{
-    margin: 30px 30px 30px 30px;
+    border: 1px solid $gray-mid;
+    min-height: 650px;
 }
 
 #header{
     font-size: 40px;
     text-align: center;
-    margin: 50px 0px;
-    color: $gray;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: $gray-mid;
 }
 
 #footer{
     text-align: center;
-    margin: 80px 0px 40px 0px;
     font-size: 13px;
     line-height: 16px;
+    margin-top: 150px;
+    margin-bottom: 50px;
 }
 
-.content_block{
-    margin: 0 0 20px 0;
+#header_container{
+}
+
+#footer_container{
+}
+
+.gray_button{
+    @extend unselectable;
+    @include border-radius(3px);
+    @include box-shadow($white 3px 3px 4px -2px inset);
+    @include background(linear-gradient(top, $gray-light , $gray-mid));
+    border: 1px solid $gray-mid;
+    font-size: 16px;
+    line-height: 28px;
+    padding: 0px 10px;
+    text-align: center;
     display: block;
-    h2{
-        margin-bottom: 20px;
-        display: inline;
+    float: left;
+    &.disabled{
+        border: 1px solid transparent;
+        @include box-shadow($gray-mid 1px 1px 2px 0px inset);
+        @include background(none);
+        color: $gray-mid;
     }
-}
-
-@mixin button{
-    font-family: inherit;
-    border: 1px solid $gray;
-    color: $dark;
-    font-size: 13px;
-    background-color: white;
-    padding: 2px 5px;
-    display: inline-block;
-    &:hover{
-        color: $dark - #111111;
-        background-color: #f3f3f3;
-        text-decoration: none;
+    &[type="button"], &[type="submit"]{
+        box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        vertical-align: middle;
+        line-height: 16px;
+        height: 16px;
+        padding: 6px 10px;
     }
-    &:disabled{
-        background-color: white;
-        color: $gray;
+    font-family: "anivers";
+    &.selected, &:hover, &.active{
+        @include box-shadow($white 3px 3px 4px -2px inset);
+        @include background(linear-gradient(top, $gray-light + $dg , $gray-mid + $dg));
+        border: 1px solid $gray-mid;
     }
     &:active{
-        padding-left:6px;
-        padding-right:4px;
+        @include background(linear-gradient(top, $gray-mid + $dg , $gray-light + $dg));
     }
 }
 
-input[type="button"], input[type="submit"], .button{
-    @include button;
-}
-
-@mixin input_box{
-    font-family: inherit;
-    border: 1px solid $gray;
-    color: $dark;
-    overflow: hidden;
+.large_gray_button{
+    @extend .gray_button;
+    font-size: 28px;
+    line-height: 60px;
+    padding: 0px 20px;
 }
 
 textarea{
-    @include input_box;
     margin-bottom: 20px;
     display: block;
     padding: 5px;
 }
 
-input[type="text"], input[type="password"]{
-    @include input_box;
+input[type="text"], input[type="password"], textarea{
+    font-family: inherit;
+    overflow: hidden;
+    color: $gray-dark;
+    @include border-radius(3px);
+    &.blank{
+        color: $gray-light;
+    }
     width: 90px;
     padding: 2px 5px;
     font-size: 13px;
+    &.large_gray_text_box, &.large_gray_textarea{
+        border: 2px solid $gray-mid-dark;
+        font-size: 20px;
+        @include border-radius(4px);
+        padding: 3px 5px;
+        display: block;
+        width: 206px;
+        &:focus{
+            border: 2px solid $gray-mid-dark;
+        }
+        &.blank{
+            color: $gray-mid;
+            border: 2px solid $gray-mid;
+        }
+        &.grid_2{
+            width: 126px;
+        }
+        &.grid_4{
+            width: 286px;
+        }
+        &.large_gray_textarea{
+            height: 200px;
+            width: 300px - 4px - 10px;
+            overflow-y: auto;
+        }
+    }
+}
+.center{
+    text-align: center;
 }
 
 .hcenter{
     display: table;
     margin: 0px auto;
+    float: none;
 }
-
-.errorlist{
-    display:none;
+.center{
+    text-align: center;
+}
+.errors, .error{
+    display: block;
+    color: $gray-dark;
+    padding: 0px 0px 20px 20px;
+    font-size: 20px;
+}
+.fright{
+    float: right;
+}
+.fleft{
+    float: left;
+}
+.space_10{
+    height: 10px;
+}
+.space_20{
+    height: 20px;
+}
+.space_30{
+    height: 30px;
+}
+.space_40{
+    height: 40px;
+}
+.space_50{
+    height: 50px;
+}
+.space_60{
+    height: 60px;
+}
+.space_70{
+    height: 70px;
+}
+.space_80{
+    height: 80px;
+}
+.page_title{
+    font-size: 28px;
+    display: block;
+    float: left;
+    margin-bottom: 20px;
+}
+.section_title{
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+.section_text{
+    margin-left: 20px;
+    font-size: 16px;
+    line-height: 22px;
 }
