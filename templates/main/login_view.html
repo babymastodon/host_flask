@@ -2,8 +2,19 @@
 {% load url from future %}{% load staticfiles %}
 
 {% block main_content %}
-<form action="." method="POST">
+<div class="grid_12">
+    <div class="page_title">New Account</div>
+    <a href="{% url 'main.views.admin' %}" class="fright gray_button">Manage your sites</a>
+</div>
+<div class="prefix_3 grid_6">
+    <div class="section_text">
+        Here is where we'll do some sort of verification to ensure that they are taking this class. We could have an email whitelist or a "password" to create an account.
+    </div>
+</div>
+<div class="clear"></div>
+<div class="space_40"></div>
+<form action="." method="POST" class="grid_10 prefix_1">
     {% csrf_token %}
-    <input type="submit" class="gray_button" value="Create Acount" />
+    <input type="submit" class="gray_button fright" value="Create Account" />
 </form>
 {% endblock %}

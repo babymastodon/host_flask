@@ -20,6 +20,8 @@ def login_required(f):
     def login_function(request, *args, **kwargs):
         if not request.user.is_authenticated():
             email = request.META.get('SSL_CLIENT_S_DN_Email')
+            if not email:
+                return redirect("https://"+ request.get_host() + request.get_full_path())
             user = authenticate(email=email)
             if user:
                 login(request, user)
@@ -120,7 +122,7 @@ def newsite(request):
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['name']
-            if re.match(r'[^\w]', name):
+            if re.match(r'.*[^\w].*', name):
                 rc['error'] = "Name Can only contain alpha-numeric characters"
             else:
                 if Site.objects.filter(name=name, owner=request.user).exists():
@@ -152,7 +154,7 @@ def updatesite(request, pk):
         form = UploadFormOptional(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['name']
-            if re.match(r'[^\w]', name):
+            if re.match(r'.*[^\w].*', name):
                 rc['error'] = "Name Can only contain alpha-numeric characters"
             else:
                 if Site.objects.filter(name=name, owner=request.user).exclude(pk=pk).exists():
@@ -161,7 +163,6 @@ def updatesite(request, pk):
                     if name != site.name:
                         rmwsgi(request, site.name)
                         site.name = name
-                        site.save()
                     if form.cleaned_data['zip_file']:
                         tmp = getzip(form.cleaned_data['zip_file'])
                         if not tmp['success']:
@@ -169,8 +170,8 @@ def updatesite(request, pk):
                         else:
                             d=tmp['d']
                             move(d,site.dirname)
-                            site.save()
                     if 'error' not in rc:
+                        site.save()
                         mkwsgi(request,site.name, site.dirname)
                         return redirect(reverse('main.views.admin'))
     rc['form'] = form
