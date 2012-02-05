@@ -46,13 +46,16 @@ def newaccount(request):
     return render(request, 'main/login_view.html', rc)
 
 def home(request):
-    return render(request, 'main/home.html')
+    rc={}
+    sites = Site.objects.all().order_by('-last_updated')
+    rc['sites'] = ({'site':x, 'url':x.get_url(request)} for x in sites)
+    return render(request, 'main/home.html', rc)
 
 @login_required
 def admin(request):
     rc={}
-    sites = Site.objects.filter(owner=request.user.pk)
-    rc['sites'] = sites
+    sites = Site.objects.filter(owner=request.user.pk).order_by('-last_updated')
+    rc['sites'] = ({'site':x, 'url':x.get_url(request)} for x in sites)
     return render(request, 'main/admin.html', rc)
 
 def getzip(f):
@@ -64,20 +67,50 @@ def getzip(f):
     if bad:
         return {'success':False, 'msg':'Bad file: ' + bad}
     names = z.namelist()
-    if 'app.py' not in names:
-        return {'success':False, 'msg':"Archive must contain a file named app.py with the entry point to your web application" + str(names) }
     for n in names:
         if re.match(r'^/', n):
             return {'success':False, 'msg':'All file paths must be relative'}
         if re.match(r'\.\.', n):
             return {'success':False, 'msg':'You are not allowed to extract files to the parent directory'}
-    return {'success':True, 'z':z}
+    d = tempfile.mkdtemp()
+    z.extractall(d)
+    for (dirpath, dirname, filenames) in os.walk(d):
+        if "app.py" in filenames:
+            if (dirpath!=d):
+                newd = tempfile.mkdtemp()
+                os.system('cp -R ' + dirpath + "/* " + newd)
+                os.system('rm -rf ' + dirpath)
+                dirpath=newd
+            return {'success':True, 'd':dirpath}
+    os.system('rm -rf ' + d)
+    return {'success':False, 'msg':"Archive must contain a file named app.py with the entry point to your web application"}
 
-def extract(z,f):
+def proj_dir():
+    return os.path.normpath(os.path.join(os.path.dirname(__file__),'..'))
+
+def rmsite(dirname):
+    os.system('rm -rf ' + os.path.join(os.path.dirname(__file__),'..','sites', dirname))
+
+def move(d,dirname):
+    f = os.path.join(proj_dir(),'sites', dirname)
     os.system('rm -rf ' + f)
-    os.mkdir(f)
-    z.extractall(f)
-    os.system('chmod 666 -R ' + f)
+    os.system('mv ' + d + ' ' + f)
+    os.system('chmod a+rw -R ' + f)
+    os.system('chmod a+x ' + f)
+
+def mkwsgi(request, name, dirname):
+    wsgi_dir = os.path.join(proj_dir(),'wsgi',request.user.username)
+    try:
+        os.mkdir(wsgi_dir)
+    except OSError:
+        pass
+    t = loader.get_template('wsgi/template.py')
+    w = open(os.path.join(wsgi_dir, name+'.py'), 'w')
+    w.write(t.render(Context({'name':dirname})))
+    w.close()
+
+def rmwsgi(request, name):
+    os.system('rm -f ' + os.path.join(os.path.dirname(__file__),'..','wsgi',request.user.username, name+'.py'))
 
 @login_required
 def newsite(request):
@@ -87,46 +120,74 @@ def newsite(request):
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['name']
-            if Site.objects.filter(name=name, owner=request.user).exists():
-                rc['error'] = "You alreay have a site by that name"
+            if re.match(r'[^\w]', name):
+                rc['error'] = "Name Can only contain alpha-numeric characters"
             else:
-                tmp = getzip(form.cleaned_data['zip_file'])
-                if not tmp['success']:
-                    rc['error'] = tmp['msg']
+                if Site.objects.filter(name=name, owner=request.user).exists():
+                    rc['error'] = "You alreay have a site by that name"
                 else:
-                    z=tmp['z']
-                    
-                    h = "%032x" % random.getrandbits(128)
-                    dirname = request.user.username+name+h
-                    proj_dir = os.path.normpath(os.path.join(os.path.dirname(__file__),'..'))
-                    site_dir = os.path.join(proj_dir,'sites', dirname)
-                    
-                    extract(z,site_dir)
+                    tmp = getzip(form.cleaned_data['zip_file'])
+                    if not tmp['success']:
+                        rc['error'] = tmp['msg']
+                    else:
+                        d=tmp['d']
+                        h = "%032x" % random.getrandbits(128)
+                        dirname = request.user.username+h
+                        move(d,dirname)
 
-                    wsgi_dir = os.path.join(proj_dir,'wsgi',request.user.username)
-                    try:
-                        os.mkdir(wsgi_dir)
-                    except OSError:
-                        pass
-                    t = loader.get_template('wsgi/template.py')
-                    w = open(os.path.join(wsgi_dir, name+'.py'), 'w')
-                    w.write(t.render(Context({'name':dirname})))
-                    w.close()
+                        mkwsgi(request,name, dirname)
+                        s = Site(owner=request.user, dirname=dirname, name=name)
+                        s.save()
 
-                    s = Site(owner=request.user, dirname=dirname, name=name)
-                    s.save()
-
-                    return redirect(reverse('main.views.admin'))
+                        return redirect(reverse('main.views.admin'))
     rc['form']=form
     return render(request, 'main/newsite.html', rc)
 
 @login_required
 def updatesite(request, pk):
     rc={}
+    site = get_object_or_404(Site, pk=pk)
+    form = UploadFormOptional({'name':site.name})
+    if request.method=="POST":
+        form = UploadFormOptional(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if re.match(r'[^\w]', name):
+                rc['error'] = "Name Can only contain alpha-numeric characters"
+            else:
+                if Site.objects.filter(name=name, owner=request.user).exclude(pk=pk).exists():
+                    rc['error'] = "You alreay have a site by that name"
+                else:
+                    if name != site.name:
+                        rmwsgi(request, site.name)
+                        mkwsgi(request, name, site.dirname)
+                        site.name = name
+                        site.save()
+                    if form.cleaned_data['zip_file']:
+                        tmp = getzip(form.cleaned_data['zip_file'])
+                        if not tmp['success']:
+                            rc['error'] = tmp['msg']
+                        else:
+                            d=tmp['d']
+                            move(d,site.dirname)
+                            site.save()
+                    if 'error' not in rc:
+                        return redirect(reverse('main.views.admin'))
+    rc['form'] = form
     return render(request, 'main/updatesite.html', rc)
 
 @login_required
 def deletesite(request, pk):
     rc={}
+    site = get_object_or_404(Site, pk=pk)
+    if not site.owner == request.user:
+        return redirect(reverse('main.views.home'))
+    if request.method=="POST":
+        rmsite(site.dirname)
+        rmwsgi(request, site.name)
+        site.delete()
+        return redirect(reverse('main.views.admin'))
+    rc['site'] = site
+    rc['url'] = site.get_url(request)
     return render(request, 'main/deletesite.html', rc)
 

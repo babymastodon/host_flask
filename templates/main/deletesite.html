@@ -1,6 +1,28 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 {% load url from future %}{% load staticfiles %}
 
 {% block main_content %}
+<div class="grid_12">
+    <div class="page_title">Delete Site</div>
+    <a href="{% url 'main.views.admin' %}" class="fright gray_button">Go Back</a>
+</div>
+<div class="prefix_1 grid_10">
+    <div class="section_text">
+        Are you sure you want to permanantly delete this site and all related data?
+    </div>
+    <div class="space_40"></div>
+    <div class="section_text center" style="font-size: 22px;">
+        {{site.name}}
+    </div>
+    <div class="space_10"></div>
+    <div class="section_text center">
+        <a href="{{ url }}" class="underline" >{{ url}}</a>
+    </div>
+    <div class="space_40"></div>
+    <form action="." method="POST">
+        {% csrf_token %}
+        <input type="submit" class="gray_button fright" value="Delete Site" />
+    </form>
+</div>
 
 {% endblock %}

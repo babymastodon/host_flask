@@ -11,12 +11,43 @@
 <div class="prefix_3 grid_6">
     <div class="section_title center">About</div>
     <div class="section_text">
-        6.170 is a class where students learn to build web applications from the ground up. This website aims to provide an easy and reliable platform for students deploy and share their class projects.
+        6.170 is a class where students learn to build web applications from the ground up. This website aims to provide an easy and reliable platform for deploying and sharing class projects.
     </div>
 </div>
 <div class="clear"></div>
 <div class="space_40"></div>
-<div class="grid_10 prefix_1">
-    <div class="section_title">All Projects</div>
-</div>
+<table class="list">
+    <thead>
+        <tr>
+            <td class="grid_2 alpha nofloat">Name</td>
+            <td class="grid_3 nofloat">Creator</td>
+            <td class="grid_5 nofloat">URL</td>
+            <td class="grid_2 nofloat omega">Last Update</td>
+        </tr>
+    </tr>
+    <tbody>
+        {% for s in sites %}
+        <tr>
+            <td class="grid_2 alpha nofloat">
+                {{s.site.name}}
+            </td>
+            <td class="grid_3 nofloat">
+                {{ s.site.owner.first_name }} {{s.site.owner.last_name }}: <b>{{s.site.owner.username}}</b>
+            </td>
+            <td class="grid_5 nofloat">
+                <a href="{{ s.url }}" >{{ s.url}}</a>
+            </td>
+            <td class="grid_2 nofloat omega">
+                {{s.site.get_time}}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td>
+                No sites
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

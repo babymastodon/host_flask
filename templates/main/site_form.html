@@ -1,0 +1,9 @@
+
+<form action="." method="POST" enctype="multipart/form-data" class="grid_8 prefix_2 siteform">
+    {% csrf_token %}
+    <ul>
+        {{form.as_ul}}
+    </ul>
+    <div class="space_40"></div>
+    <input type="submit" class="gray_button fright" value="Submit"/>
+</form>

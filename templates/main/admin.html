@@ -11,17 +11,28 @@
 <table class="list">
     <thead>
         <tr>
-            <td class="grid_2 alpha">Name</td>
-            <td class="grid_4">URL</td>
-            <td class="grid_2">Time</td>
-            <td class="grid_2 omega"><a href="{% url 'main.views.newsite' %}" class="gray_button fright">New Site</a></td>
+            <td class="grid_2 alpha nofloat">Name</td>
+            <td class="grid_5 nofloat">URL</td>
+            <td class="grid_2 nofloat">Last Update</td>
+            <td class="grid_3 omega nofloat clearfix"><a href="{% url 'main.views.newsite' %}" class="gray_button fright">New Site</a></td>
         </tr>
     </tr>
     <tbody>
         {% for s in sites %}
         <tr>
-            <td>
-                {{s}}
+            <td class="grid_2 alpha nofloat">
+                {{s.site.name}}
+            </td>
+            <td class="grid_5 nofloat">
+                <a href="{{ s.url }}" >{{ s.url}}</a>
+            </td>
+            <td class="grid_2 nofloat">
+                {{s.site.get_time}}
+            </td>
+            <td class="grid_3 omega nofloat">
+                <a href="{% url 'main.views.updatesite' pk=s.site.pk%}" class="fright" >Edit Site</a>
+                <div class="bspace fright"></div>
+                <a href="{% url 'main.views.deletesite' pk=s.site.pk %}" class="fright" >Delete Site</a>
             </td>
         </tr>
         {% empty %}

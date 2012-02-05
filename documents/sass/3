@@ -218,40 +218,16 @@ input[type="text"], input[type="password"], textarea{
     font-size: 16px;
     line-height: 22px;
 }
+.list{
+    margin-left: 90px;
+}
 .nofloat{
     float: none;
 }
 .list{
-    font-size: 12px;
-    margin-left: 10px;
-    thead{
+    thead td{
+        margin-bottom: 10px;
         border-bottom: 2px solid $gray-mid-dark;
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 30px;
-        td{
-            padding-bottom: 10px;
-        }
-    }
-    tbody{
-    a{
-        text-decoration: underline;
-    }
-            border-bottom: 1px dotted $gray-mid;
-        td{
-            padding-top:10px;
-            padding-bottom: 10px;
-        }
-    }
-}
-.underline{
-    text-decoration: underline;
-}
-b{
-    font-weight: bold;
-}
-.siteform{
-    li{
-        margin-bottom:10px;
+        padding-bottom: 10px;
     }
 }

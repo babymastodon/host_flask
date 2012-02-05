@@ -1,6 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 {% load url from future %}{% load staticfiles %}
 
 {% block main_content %}
-
+<div class="grid_12 clearfix">
+    <div class="page_title">Update Site</div>
+    <a href="{% url 'main.views.admin' %}" class="fright gray_button">Go Back</a>
+    <div class="clear"></div>
+    {% if error %}<div class="errors">{{error}}</div>{% endif %}
+</div>
+<div class="clear"></div>
+<div class="space_40"></div>
+{% include 'main/site_form.html' %}
 {% endblock %}

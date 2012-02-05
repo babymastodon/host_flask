@@ -8,3 +8,7 @@ from main.models import *
 class UploadForm(forms.Form):
     name = forms.CharField(max_length=20)
     zip_file = forms.FileField()
+
+class UploadFormOptional(forms.Form):
+    name = forms.CharField(max_length=20)
+    zip_file = forms.FileField(required=False)
