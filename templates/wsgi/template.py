@@ -11,7 +11,14 @@ sys.path.append(SITE_ROOT)
 
 #what are we going to do to secure the server?
 
-from app import app as application
+
+def application(environ, start_response):
+    try:
+        from app import app as student_app
+    except:
+        raise ImportError("Could not find the application entry point. Please make sure that your app.py file has the line: 'app = Flask(__name__)'")
+    return student_app(environ, start_response)
+
 
 from paste.exceptions.errormiddleware import ErrorMiddleware
 application = ErrorMiddleware(application, debug=True)

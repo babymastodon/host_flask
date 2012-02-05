@@ -160,7 +160,6 @@ def updatesite(request, pk):
                 else:
                     if name != site.name:
                         rmwsgi(request, site.name)
-                        mkwsgi(request, name, site.dirname)
                         site.name = name
                         site.save()
                     if form.cleaned_data['zip_file']:
@@ -172,6 +171,7 @@ def updatesite(request, pk):
                             move(d,site.dirname)
                             site.save()
                     if 'error' not in rc:
+                        mkwsgi(request,site.name, site.dirname)
                         return redirect(reverse('main.views.admin'))
     rc['form'] = form
     return render(request, 'main/updatesite.html', rc)
