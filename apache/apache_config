@@ -2,7 +2,6 @@
 	#ServerAdmin hogbait@gmail.com
 	#ServerName hogbait.kicks-ass.net
 	#Uncomment the following line to have the admin page via ssl
-	#Redirect /admin https://hogbait.kicks-ass.net/admin
 	
     WSGIDaemonProcess host_flask threads=25
     WSGIProcessGroup host_flask

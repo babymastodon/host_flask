@@ -115,6 +115,11 @@ TEMPLATE_DIRS = (os.path.join(SITE_ROOT,'templates'),
     # Don't forget to use absolute paths, not relative paths.
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'host_flask.email_backend.EmailBackend',
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -18,20 +18,21 @@
     <div id="header_container">
         <div id="header" class="container_12">
             {% block header %}
-            <h1>6.170 Flask Deployment</h1>
+            <h1>Flask Deployment</h1>
             {% endblock %}
         </div>
     </div>
-    <div id="content" class="container_12">
-        {% block content %}{% endblock %}
-    </div>          
-    <div id="footer_container">
-        <div id="footer" class="container_12">
+    <div id="page" class="container_12">
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="clear"></div>
+        <div id="footer" class="grid_12">
             {% block footer %}
             <p><a href="mailto:me@gmail.com">Mastodon Scripts</a> &copy; 2011</p>
             {% endblock %}
         </div>
-    </div>
+    </div>          
 </body>
 
 

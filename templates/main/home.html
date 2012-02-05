@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% load url from future %}{% load staticfiles %}
+
+{% block main_content %}
+<div class="grid_12">
+    <div class="page_title">Project Listings</div>
+    <a href="{% url 'main.views.admin' %}" class="fright gray_button">Manage your sites</a>
+</div>
+<div class="clear"></div>
+<div class="space_40"></div>
+<div class="prefix_3 grid_6">
+    <div class="section_title center">About</div>
+    <div class="section_text">
+        6.170 is a class where students learn to build web applications from the ground up. This website aims to provide an easy and reliable platform for students deploy and share their class projects.
+    </div>
+</div>
+<div class="clear"></div>
+<div class="space_40"></div>
+<div class="grid_10 prefix_1">
+    <div class="section_title">All Projects</div>
+</div>
+{% endblock %}

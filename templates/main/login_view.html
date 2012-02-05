@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+{% load url from future %}{% load staticfiles %}
+
+{% block main_content %}
+<form action="." method="POST">
+    {% csrf_token %}
+    <input type="submit" class="gray_button" value="Create Acount" />
+</form>
+{% endblock %}

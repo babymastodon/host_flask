@@ -1,0 +1,37 @@
+{% extends 'main/base.html' %}
+{% load url from future %}{% load staticfiles %}
+
+{% block main_content %}
+<div class="grid_12">
+    <div class="page_title">My Sites</div>
+    <a href="{% url 'main.views.home' %}" class="fright gray_button">Back to Site Listing</a>
+</div>
+<div class="clear"></div>
+<div class="space_40"></div>
+<table class="list">
+    <thead>
+        <tr>
+            <td class="grid_2 alpha">Name</td>
+            <td class="grid_4">URL</td>
+            <td class="grid_2">Time</td>
+            <td class="grid_2 omega"><a href="{% url 'main.views.newsite' %}" class="gray_button fright">New Site</a></td>
+        </tr>
+    </tr>
+    <tbody>
+        {% for s in sites %}
+        <tr>
+            <td>
+                {{s}}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td>
+                No sites
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

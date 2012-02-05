@@ -3,12 +3,19 @@
 	#ServerName mail.babymastodon.com
     #ServerAlias hogbait-server.local	
 
-    WSGIDaemonProcess host_flask threads=25
-    WSGIProcessGroup host_flask
+    WSGIDaemonProcess host_flask_ssl threads=25
+    WSGIProcessGroup host_flask_ssl
 	
 	SSLEngine on
-    SSLCertificateFile /var/www/keys/server.crt
-    SSLCertificateKeyFile /var/www/keys/server.key
+    SSLCertificateFile /var/www/host_flask/apache/server.crt
+    SSLCertificateKeyFile /var/www/host_flask/apache/server.key
+    SSLCACertificateFile /var/www/host_flask/apache/mitClient.pem
+    SSLOptions +stdEnvVars
+    <Location /manage>
+        SSLVerifyClient require
+        SSLVerifyDepth 1
+        SSLRenegBufferSize 10000000
+    </Location>
 	
 	DocumentRoot /var/www/host_flask/documents
 

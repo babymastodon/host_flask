@@ -27,15 +27,13 @@ $dg: #111111;
 }
 
 body{
-   font-size: 16px;
+    font-size: 16px;
     color: $gray-dark;
     a{
         color: $gray-dark;
         text-decoration: none;
-        &:hover{
-            text-decoration: underline;
-        }
     }
+    @include background(linear-gradient(top, $gray-light, rgba($gray-light, 0) 150px));
 }
 
 h1{font-size: 30px;}
@@ -43,16 +41,15 @@ h2{font-size: 20px;}
 h3{font-size: 15px;}
 
 #content{
-    border: 1px solid $gray-mid;
     min-height: 650px;
 }
 
 #header{
     font-size: 40px;
     text-align: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    color: $gray-mid;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    color: $gray-dark;
 }
 
 #footer{
@@ -64,9 +61,6 @@ h3{font-size: 15px;}
 }
 
 #header_container{
-}
-
-#footer_container{
 }
 
 .gray_button{
@@ -157,6 +151,10 @@ input[type="text"], input[type="password"], textarea{
         }
     }
 }
+.bspace{
+    width: 10px;
+    height: 1px;
+}
 .center{
     text-align: center;
 }
@@ -219,4 +217,7 @@ input[type="text"], input[type="password"], textarea{
     margin-left: 20px;
     font-size: 16px;
     line-height: 22px;
+}
+.list{
+    margin-left: 90px;
 }
