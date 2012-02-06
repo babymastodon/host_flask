@@ -15,7 +15,7 @@ sys.path.append(SITE_ROOT)
 def application(environ, start_response):
     try:
         from app import app as student_app
-    except:
+    except NameError, ImportError:
         raise ImportError("Could not find the application entry point. Please make sure that your app.py file has the line: 'app = Flask(__name__)'")
     return student_app(environ, start_response)
 

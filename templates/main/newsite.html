@@ -13,9 +13,10 @@
 <div class="prefix_1 grid_10">
     <div class="section_title center">Tips</div>
     <ul class="section_list">
-        <li>Make sure that the application works on your computer and that the database has been initialized.</li>
         <li>The wsgi application entry point should be a variable called "app" in a file called "app.py"</li>
-        <li>Make sure that you use relative paths to refer to your sqllite database</li>
+        <li>You must use an absolute path to refer to your sqllite database. Use os.path.join(os.path.dirname(__file__), "mydatabase.db") to calculate the absolute path.</li>
+        <li>Make sure that the application works on your computer and that the database has been initialized.</li>
+        <li>Do not hard-code ANY urls. Do reverse url lookups for all links, images, stylesheets, etc.</li>
         <li>Max filesize is around 10 mb</li>
         <li>This website intentionally exposes debug information of all websites. Do not use this information to interfere with other people's websites.</li>
     </ul>
